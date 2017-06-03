@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    function Lazyman(name) {
+        var _this = this;
+        _this.tasks = [];
+        var fn = (function (n) {
+            n = name;
+            return function () {
+                console.log('hello i am '+n);
+                _this.next();
+            }
+        })(name);
+        _this.tasks.push(fn);
+        setTimeout(function () {
+            _this.next();
+        },0);
+
+        return this;
+    }
+    Lazyman.prototype.next = function () {
+        var fn = this.tasks.shift();
+        fn && fn();
+    };
+    Lazyman.prototype.sleep = function (time) {
+        var _this = this;
+        var fn = (function (t) {
+            t = time;
+            return function () {
+                setTimeout(function () {
+                    console.log('sleep a couple time and wake up');
+                    _this.next();
+                },t);
+            }
+        })(time);
+        this.tasks.push(fn);
+        return this;
+    };
+    Lazyman.prototype.cry = function (time) {
+        var _this = this;
+        var fn = (function (t) {
+            t = time;
+            return function () {
+                setTimeout(function () {
+                    console.log('cry a couple time');
+                    _this.next();
+                },t);
+            }
+        })(time);
+        this.tasks.push(fn);
+        return this;
+    };
+    Lazyman.prototype.eat = function (name) {
+        var _this = this;
+        var fn = (function (n) {
+            n = name;
+            return function () {
+                console.log('eat '+ n);
+                _this.next();
+            }
+        })(name);
+        this.tasks.push(fn);
+        return this;
+    };
+    function lazyman(name) {
+       return  new Lazyman(name);
+    }
+   lazyman('Hank').sleep(1000).cry(1000).eat('dinner');
+</script>
+</body>
+</html>
